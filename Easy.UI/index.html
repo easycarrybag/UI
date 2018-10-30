@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html lang="en" ng-app="EasyBag">
+<head>
+    <title>EzyBaggy</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://apis.google.com/js/api:client.js"></script>
+    <script>
+        var googleUser = {};
+        
+        var startApp = function () {
+            gapi.load('auth2', function () {
+                // Retrieve the singleton for the GoogleAuth library and set up the client.
+                auth2 = gapi.auth2.init({
+                    client_id: '32642851708-0l8ncvlbm1mdj0b3hld5874khtl0p0c9.apps.googleusercontent.com',
+                    cookiepolicy: 'single_host_origin',
+                    // Request scopes in addition to 'profile' and 'email'
+                    //scope: 'additional_scope'
+                });
+                attachSignin(document.getElementById('customBtn'));
+                
+            });
+        };
+        function attachSignin(element) {
+            console.log(element.id);
+            auth2.attachClickHandler(element, {},
+                function (googleUser) {
+                    var profile = googleUser.getBasicProfile();
+                    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                    console.log('Name: ' + profile.getName());
+                    console.log('Image URL: ' + profile.getImageUrl());
+                    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.+ "expires=" + Date.now.toUTCString()
+
+                    var id = profile.getId(); var name = profile.getName(); var imgurl = profile.getImageUrl(); var email = profile.getEmail();
+
+
+                    if (id != undefined && id != '' && email != undefined && email != '') {
+                        var user = { id: id, name: name, imgUrl: imgurl, email: email };
+                        createCookie('userInfo', JSON.stringify(user), 1)
+
+                        location.href = "Dashboard.html";
+                    }
+                }, function (error) {
+                    //alert(JSON.stringify(error, undefined, 2));
+                });
+            element.click();
+        }
+
+        startApp();
+
+        var logoutData = localStorage.getItem("logout");
+        if (logoutData == 'yes') {
+            localStorage.removeItem("logout");
+            //var auth2 = gapi.auth2.getAuthInstance();
+            //if (auth2 != null) {
+            //    setTimeout(30000, function () {
+            //        auth2.signOut().then(function () {
+            //            console.log('User signed out.');
+            //        });
+            //    });
+
+            //}
+
+
+        }
+
+    </script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.2/angular.js"></script>
+    <script src="App/app.js"></script>
+    <script src="App/loginController.js"></script>
+
+    <!-- Required meta tags -->
+
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="vendor/iconfonts/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="vendor/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="vendor/css/vendor.bundle.addons.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="images/favicon.png" />
+
+</head>
+<body ng-controller="loginController">
+
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper auth-page">
+            <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
+                <div class="row w-100">
+                    <div class="col-lg-4 mx-auto">
+                        <div class="auto-form-wrapper">
+                            <form action="#">
+                                <div class="form-group">
+                                    <label class="label">Username</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Username">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="mdi mdi-check-circle-outline"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="label">Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" placeholder="*********">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="mdi mdi-check-circle-outline"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary submit-btn btn-block">Login</button>
+                                </div>
+                                <div class="form-group d-flex justify-content-between">
+                                    <div class="form-check form-check-flat mt-0">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" checked> Keep me signed in
+                                        </label>
+                                    </div>
+                                    <a href="#" class="text-small forgot-password text-black">Forgot Password</a>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-block customGPlusSignIn" id="customBtn">
+                                        <i class="mdi mdi-google mx-3"></i>  Log in with Google
+                                    </button>
+                                </div>
+                                <div class="text-block text-center my-3">
+                                    <span class="text-small font-weight-semibold">Not a member ?</span>
+                                    <a href="pages/samples/register.html" class="text-black text-small">Create new account</a>
+                                </div>
+                            </form>
+                        </div>
+                        <ul class="auth-footer">
+                            <li>
+                                <a href="#">Conditions</a>
+                            </li>
+                            <li>
+                                <a href="#">Help</a>
+                            </li>
+                            <li>
+                                <a href="#">Terms</a>
+                            </li>
+                        </ul>
+                        <p class="footer-text text-center">copyright © 2018. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="vendor/js/vendor.bundle.base.js"></script>
+    <script src="vendor/js/vendor.bundle.addons.js"></script>
+    <!-- endinject -->
+    <!-- inject:js -->
+    <script src="js/off-canvas.js"></script>
+    <script src="js/misc.js"></script>
+    <!-- endinject -->
+
+
+</body>
+</html>
